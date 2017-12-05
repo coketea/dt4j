@@ -1,8 +1,11 @@
 package com.coketea.dt.server;
 
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
-public interface Server {
+@Component
+public interface DTServer {
 
     /**
      * 启动服务器

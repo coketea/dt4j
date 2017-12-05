@@ -1,6 +1,6 @@
 package com.coketea.dt.server;
 
-public abstract class AbstractServer implements Server {
+public abstract class AbstractDTServer implements DTServer {
 
     /**
      * 标识服务器是否正在运行，当关闭应用时应该将其置为false，以便服务器正常关闭
@@ -12,11 +12,11 @@ public abstract class AbstractServer implements Server {
      */
     private int port = 9260;
 
-    public AbstractServer() {
+    public AbstractDTServer() {
 
     };
 
-    public AbstractServer(int port) {
+    public AbstractDTServer(int port) {
         this.port = port;
     }
 

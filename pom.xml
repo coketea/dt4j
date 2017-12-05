@@ -15,15 +15,19 @@
         <module>dt-common</module>
         <module>dt-coordinator</module>
         <module>dt-admin</module>
+        <module>dt-datasource</module>
+        <module>dt-agent</module>
     </modules>
 
     <properties>
         <encoding>UTF-8</encoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <slf4j.version>1.7.25</slf4j.version>
         <junit.version>4.12</junit.version>
         <log4j.version>2.10.0</log4j.version>
+        <springboot.version>1.5.9.RELEASE</springboot.version>
+        <aspect.version>1.8.4</aspect.version>
     </properties>
 
     <dependencyManagement>
@@ -74,6 +78,20 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspect.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

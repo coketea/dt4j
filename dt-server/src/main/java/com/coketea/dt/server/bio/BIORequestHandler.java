@@ -1,6 +1,6 @@
 package com.coketea.dt.server.bio;
 
-import com.coketea.dt.server.Server;
+import com.coketea.dt.server.DTServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,10 +8,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class BIORequestHandler implements Runnable {
 
-    final Logger logger = LoggerFactory.getLogger(BIORequestHandler.class);
+    static final Logger logger = LoggerFactory.getLogger(BIORequestHandler.class);
 
     /**
      * 客户端请求socket对象
@@ -21,9 +22,9 @@ public class BIORequestHandler implements Runnable {
     /**
      * 持有一个Server对象的引用
      */
-    private Server server;
+    private DTServer server;
 
-    public BIORequestHandler(Server server, Socket clientSocket) {
+    public BIORequestHandler(DTServer server, Socket clientSocket) {
         this.server = server;
         this.clientSocket = clientSocket;
     }
@@ -35,13 +36,14 @@ public class BIORequestHandler implements Runnable {
         String msg = null;
         try {
             out = new PrintStream(clientSocket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(
+                    clientSocket.getInputStream(), StandardCharsets.UTF_8));
             while (this.server.isRunning()) {
                 msg = in.readLine();
                 if (msg == null || msg.length() == 0) {
                     break;
                 } else {
-                    logger.debug(msg);
+                    logger.info(msg);
                 }
             }
         } catch (Exception e) {

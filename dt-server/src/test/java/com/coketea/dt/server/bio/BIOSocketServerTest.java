@@ -1,13 +1,13 @@
 package com.coketea.dt.server.bio;
 
-import com.coketea.dt.server.Server;
+import com.coketea.dt.server.DTServer;
 import org.junit.Test;
 
 public class BIOSocketServerTest {
 
-    @Test
+    //@Test
     public void testStartup() throws Exception {
-        Server server = new BIOSocketServer();
+        DTServer server = new BIOSocketServer();
         server.startup();
     }
 }

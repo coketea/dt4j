@@ -1,6 +1,7 @@
 package com.coketea.dt.client.bio;
 
-import com.coketea.dt.client.Client;
+import com.coketea.dt.client.AbstractDTClient;
+import com.coketea.dt.client.DTClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,20 +10,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
-public class BIOSocketClient implements Client {
+public class BIOSocketClient extends AbstractDTClient {
 
-    final Logger logger = LoggerFactory.getLogger(BIOSocketClient.class);
-
-    /**
-     * 服务器IP地址
-     */
-    private String ip = "127.0.0.1";
-
-    /**
-     * 服务器端口号
-     */
-    private int port = 9260;
+    static final Logger logger = LoggerFactory.getLogger(BIOSocketClient.class);
 
     /**
      * 连接至服务器的Socket对象
@@ -39,26 +31,19 @@ public class BIOSocketClient implements Client {
      */
     private BufferedReader in;
 
-    public BIOSocketClient() {}
+    public BIOSocketClient() {
+        super();
+    }
 
     public BIOSocketClient(String ip, int port) {
-        this.ip = ip;
-        this.port = port;
+        super(ip, port);
     }
 
     @Override
     public void connect() throws IOException {
-        this.clientSocket = new Socket(this.ip, this.port);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        this.clientSocket = new Socket(this.getIp(), this.getPort());
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
         out = new PrintStream(clientSocket.getOutputStream());
-        while (true) {
-            out.print("Hello\r\n");
-            try {
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -86,5 +71,17 @@ public class BIOSocketClient implements Client {
                 logger.error("close client socket failed", e);
             }
         }
+    }
+
+    @Override
+    public void sendMsg(byte[] msg) throws IOException {
+        this.out.write(msg);
+        this.out.println();
+        this.out.flush();
+    }
+
+    @Override
+    public String receiveMsg() throws IOException {
+        return this.in.readLine();
     }
 }

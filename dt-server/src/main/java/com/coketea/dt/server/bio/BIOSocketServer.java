@@ -1,6 +1,6 @@
 package com.coketea.dt.server.bio;
 
-import com.coketea.dt.server.AbstractServer;
+import com.coketea.dt.server.AbstractDTServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,9 +11,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class BIOSocketServer extends AbstractServer {
+public class BIOSocketServer extends AbstractDTServer {
 
-    final Logger logger = LoggerFactory.getLogger(BIOSocketServer.class);
+    static final Logger logger = LoggerFactory.getLogger(BIOSocketServer.class);
 
     /**
      * 服务器Socket对象
