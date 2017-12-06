@@ -82,6 +82,8 @@ public class BIOSocketClient extends AbstractDTClient {
 
     @Override
     public String receiveMsg() throws IOException {
-        return this.in.readLine();
+        String msg = this.in.readLine();
+        logger.debug("msg received from server: {}", msg);
+        return msg;
     }
 }

@@ -1,5 +1,10 @@
 package com.coketea.dt.server;
 
+import com.coketea.dt.server.bio.BIORequestHandler;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class AbstractDTServer implements DTServer {
 
     /**
@@ -12,6 +17,11 @@ public abstract class AbstractDTServer implements DTServer {
      */
     private int port = 9260;
 
+    /**
+     * 客户端清单
+     */
+    private Map<String, RequestHandler> clients = new HashMap<String, RequestHandler>();
+
     public AbstractDTServer() {
 
     };
@@ -23,6 +33,11 @@ public abstract class AbstractDTServer implements DTServer {
     @Override
     public void shutdown() {
         this.running = false;
+    }
+
+    @Override
+    public void addClient(String clientId, RequestHandler requestHandler) {
+        this.clients.put(clientId, requestHandler);
     }
 
     @Override

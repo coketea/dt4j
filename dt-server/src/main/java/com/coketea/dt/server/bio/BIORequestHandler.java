@@ -1,16 +1,21 @@
 package com.coketea.dt.server.bio;
 
+import com.alibaba.fastjson.JSONObject;
+import com.coketea.dt.io.protocol.DTCommunicationMessage;
+import com.coketea.dt.io.protocol.MessageHandler;
 import com.coketea.dt.server.DTServer;
+import com.coketea.dt.server.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class BIORequestHandler implements Runnable {
+public class BIORequestHandler implements Runnable, RequestHandler {
 
     static final Logger logger = LoggerFactory.getLogger(BIORequestHandler.class);
 
@@ -24,15 +29,29 @@ public class BIORequestHandler implements Runnable {
      */
     private DTServer server;
 
+    /**
+     * 消息处理器
+     */
+    private MessageHandler messageHandler;
+
+    /**
+     * 发送数据的对象
+     */
+    private PrintStream out;
+
+    /**
+     * 接收数据的对象
+     */
+    private BufferedReader in;
+
     public BIORequestHandler(DTServer server, Socket clientSocket) {
         this.server = server;
         this.clientSocket = clientSocket;
+        this.messageHandler = new BIORequestMessageHandler(this);
     }
 
     @Override
     public void run() {
-        PrintStream out = null;
-        BufferedReader in = null;
         String msg = null;
         try {
             out = new PrintStream(clientSocket.getOutputStream());
@@ -40,11 +59,9 @@ public class BIORequestHandler implements Runnable {
                     clientSocket.getInputStream(), StandardCharsets.UTF_8));
             while (this.server.isRunning()) {
                 msg = in.readLine();
-                if (msg == null || msg.length() == 0) {
-                    break;
-                } else {
-                    logger.info(msg);
-                }
+                logger.debug("received message from client:{}", msg);
+                DTCommunicationMessage sendMsg = this.messageHandler.handle(msg);
+                this.sendMsg(JSONObject.toJSONString(sendMsg));
             }
         } catch (Exception e) {
             logger.error("request handler execute error", e);
@@ -73,5 +90,30 @@ public class BIORequestHandler implements Runnable {
                 }
             }
         }
+    }
+
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    @Override
+    public void addSelfToClientList(String clientId) {
+        this.server.addClient(clientId, this);
+    }
+
+    @Override
+    public void sendMsg(byte[] msg) throws IOException {
+        this.out.write(msg);
+        this.out.println();
+        this.out.flush();
+    }
+
+    @Override
+    public void sendMsg(String msg) throws IOException {
+        this.sendMsg(msg.getBytes(StandardCharsets.UTF_8));
     }
 }

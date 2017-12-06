@@ -26,6 +26,8 @@ public class ApplicationInitializer implements ApplicationListener<ContextRefres
                 dtServer.startup();
             } catch (Exception e) {
                 logger.error("dtServer startup failed", e);
+                dtServer.shutdown();
+                System.exit(1);
             }
         }
     }

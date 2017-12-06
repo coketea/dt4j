@@ -22,4 +22,9 @@ public interface DTServer {
      * @return true-正在运行，false-正在停止中
      */
     boolean isRunning();
+
+    /**
+     * 将客户端请求处理器添加到服务器管理清单中
+     */
+    void addClient(String clientId, RequestHandler requestHandler);
 }
